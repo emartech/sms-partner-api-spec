@@ -1,0 +1,27 @@
+# Editors & IDEs
+.idea
+.vs
+.vscode
+.DS_STORE
+
+# Project
+node_modules
+.env
+.env.test
+dist
+build
+
+# Tests
+coverage
+lib-cov
+.nyc_output
+
+# Logs
+logs
+*.log
+
+# Others
+pids
+*.pid
+*.seed
+.vagrant
