@@ -1,4 +1,4 @@
-# Emartech Repository Template
+# Emarsys SMS Partner API OpenAPI Specification
 
 Default templates for Emartech open source repositories, including LICENSE, .reuse/dep5, Code of Conduct, etc... All repositories on github.com/Emartech will be created based on this template.
 
