@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Copy OpenAPI configs
+      - name: Copy OpenAPI configs to swagger-ui folder
         run: cp -r ./openapi swagger-ui/openapi
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
