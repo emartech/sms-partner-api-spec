@@ -10,8 +10,8 @@
     }
   ],
   "presets": [
-    "SwaggerUIBundle.presets.apis",
-    "SwaggerUIStandalonePreset"
+    SwaggerUIBundle.presets.apis,
+    SwaggerUIStandalonePreset
   ],
   "layout": "StandaloneLayout"
 }
