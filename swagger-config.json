@@ -1,11 +1,11 @@
 {
   "urls": [
     {
-      "url": "https://raw.githubusercontent.com/emartech/sms-partner-api-spec/main/openapi/sms/v1/partner-callbacks.yaml",
+      "url": "./openapi/sms/v1/partner-callbacks.yaml",
       "name": "Partner Callbacks V1"
     },
     {
-      "url": "https://raw.githubusercontent.com/emartech/sms-partner-api-spec/main/openapi/sms/v1/partner-service.yaml",
+      "url": "./openapi/sms/v1/partner-service.yaml",
       "name": "Partner Service V1"
     }
   ],
