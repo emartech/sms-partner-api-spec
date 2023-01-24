@@ -1,0 +1,12 @@
+{
+  "urls": [
+    {
+      "url": "./openapi/sms/v1/partner-callbacks.yaml",
+      "name": "Partner Callbacks"
+    },
+    {
+      "url": "./openapi/sms/v1/partner-service.yaml",
+      "name": "Partner Service"
+    }
+  ]
+}
