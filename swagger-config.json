@@ -9,12 +9,5 @@
       "name": "Partner Service V1"
     }
   ],
-  "presets": [
-    SwaggerUIBundle.presets.apis,
-    SwaggerUIStandalonePreset
-  ],
-  "plugins": [
-    SwaggerUIBundle.plugins.DownloadUrl
-  ],
-  "layout": "StandaloneLayout"
+  "urls.primaryName": "Partner Callbacks V1"
 }
