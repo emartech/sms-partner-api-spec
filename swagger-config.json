@@ -1,12 +1,17 @@
 {
   "urls": [
     {
-      "url": "./openapi/sms/v1/partner-callbacks.yaml",
+      "url": "/openapi/sms/v1/partner-callbacks.yaml",
       "name": "Partner Callbacks V1"
     },
     {
-      "url": "./openapi/sms/v1/partner-service.yaml",
+      "url": "/openapi/sms/v1/partner-service.yaml",
       "name": "Partner Service V1"
     }
-  ]
+  ],
+  "presets": [
+    "SwaggerUIBundle.presets.apis",
+    "SwaggerUIStandalonePreset"
+  ],
+  "layout": "StandaloneLayout"
 }
