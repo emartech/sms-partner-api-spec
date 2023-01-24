@@ -1,5 +1,5 @@
 {
-  "url": "/openapi/sms/v1/partner-callbacks.yaml",
+  "url": "/sms-partner-api-spec/openapi/sms/v1/partner-callbacks.yaml",
   "presets": [
     "SwaggerUIBundle.presets.apis",
     "SwaggerUIStandalonePreset"
