@@ -1,9 +1,8 @@
 name: Deploy Swagger UI to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
   deploy:
