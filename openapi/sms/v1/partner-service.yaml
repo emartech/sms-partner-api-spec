@@ -15,7 +15,7 @@ paths:
   /clients/{clientId}/configuration:
     summary: Manage a client configuration within a Partner service
     parameters:
-      - $ref: '#/components/parameters/clientIdPathParam'
+      - $ref: './common.yaml#/components/parameters/clientIdPathParam'
     put:
       tags: [client-configuration]
       operationId: createOrUpdateClientConfiguration
@@ -47,7 +47,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: './common.yaml#/components/schemas/Error'
     get:
       tags: [client-configuration]
       operationId: getClientConfiguration
@@ -69,7 +69,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: './common.yaml#/components/schemas/Error'
     delete:
       tags: [client-configuration]
       operationId: deleteClientConfiguration
@@ -87,42 +87,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-  /clients/{clientId}/messages:
-    parameters:
-      - $ref: '#/components/parameters/clientIdPathParam'
-    post:
-      tags: [message-sending]
-      operationId: sendMessages
-      summary: Send SMS messages to the Partner API
-      requestBody:
-        description: Messages to be sent
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Messages'
-      responses:
-        '202':
-          description: Receiving empty response in the case all messages were accepted.
-        '400':
-          description: Returns error type and error context globally, for all messages, or per message
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SMSSendingPartnerError'
-        '403':
-          description: Authentication failed.
-        '404':
-          description: Client does not have a configuration recorded within the Partner service. All messages will be marked as failed.
-        '429':
-          description: Too many requests. Messages will be retried later.
-        '5XX':
-          description: Server error occurred. Messages will be retried later
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                $ref: './common.yaml#/components/schemas/Error'
   /testConnection:
     post:
       tags: [connection-test]
@@ -142,13 +107,13 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/TestConnectionResponseOK'
-                  - $ref: '#/components/schemas/TestConnectionResponseKO'
+                  - $ref: '#/components/schemas/TestConnectionSuccessResponse'
+                  - $ref: '#/components/schemas/TestConnectionFailureResponse'
                 discriminator:
                   propertyName: state
                   mapping:
-                    success: '#/components/schemas/TestConnectionResponseOK'
-                    error: '#/components/schemas/TestConnectionResponseKO'
+                    success: '#/components/schemas/TestConnectionSuccessResponse'
+                    error: '#/components/schemas/TestConnectionFailureResponse'
               examples: # examples are not used from the schema
                 ok:
                   summary: Test connection was success
@@ -169,79 +134,77 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: './common.yaml#/components/schemas/Error'
+  /clients/{clientId}/messages:
+    parameters:
+      - $ref: './common.yaml#/components/parameters/clientIdPathParam'
+    post:
+      tags: [message-sending]
+      operationId: sendMessages
+      summary: Send SMS messages to the Partner API
+      requestBody:
+        description: Messages to be sent
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutboundMessageBatch'
+      responses:
+        '202':
+          description: Receiving empty response in the case all messages were accepted.
+        '400':
+          description: Returns error type and error context globally, for all messages, or per message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutboundMessageBatchError'
+        '403':
+          description: Authentication failed.
+        '404':
+          description: Client does not have a configuration recorded within the Partner service. All messages will be marked as failed.
+        '429':
+          description: Too many requests. Messages will be retried later.
+        '5XX':
+          description: Server error occurred. Messages will be retried later
+          content:
+            application/json:
+              schema:
+                $ref: './common.yaml#/components/schemas/Error'
 
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Message to describe the error
-          example: 'Description of the error'
-      required:
-        - message
-    ClientConfigurationErrors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClientConfigurationError'
-            minimum: 1
-    ClientConfigurationError:
-      type: object
-      properties:
-        fieldName:
-          type: string
-          example: 'servicePlanId'
-        description:
-          type: string
-          example: 'servicePlanId can only contain numbers.'
-        errorType:
-          type: string
-          enum: [missing, invalid]
-          example: invalid
-      required:
-        - fieldName
-        - description
-        - errorType
-    ClientCallbackUrls:
-      type: object
-      properties:
-        inboundMessages:
-          $ref: '#/components/schemas/InboundMessageConfiguration'
-        deliveryReports:
-          $ref: '#/components/schemas/DeliveryReportsConfiguration'
-    InboundMessageConfiguration:
-      type: object
-      properties:
-        url:
-          type: string
-          format: uri
-          description: The inbound message URL, that is generated by the Partner.'
-          example: 'https://api.partner.io/inbound-messages/unique-id'
-      required:
-        - url
-    DeliveryReportsConfiguration:
-      type: object
-      properties:
-        url:
-          type: string
-          format: uri
-          description: The delivery report URL, that is generated by the Partner.
-          example: 'https://api.partner.io/delivery-reports/unique-id'
-      required:
-        - url
+    # Client Onboarding
     CustomFieldValues:
       type: object
-      description: Object of the values the client entered during on-boarding mapped by the field key
+      description: Object containing the values the client entered during onboarding mapped by their custom field name as key.
       minProperties: 1
       example:
         apiKey: 'abc123'
         servicePlanId: '123abc'
         baseUrl: 'https://api.sms.provider.io'
+    CallbackUrl:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: A callback URL, provided by the Partner.'
+          example: 'https://api.partner.io/callback-path/unique-id'
+      required:
+        - url
+    ClientCallbackUrls:
+      type: object
+      properties:
+        inboundMessages:
+          allOf:
+            - $ref: '#/components/schemas/CallbackUrl'
+            - description: 'The inbound message callback URL, provided by the Partner.'
+              example: 'https://api.partner.io/inboundMessages/unique-id'
+        deliveryReports:
+          allOf:
+            - $ref: '#/components/schemas/CallbackUrl'
+            - description: 'The delivery report callback URL, provided by the Partner.'
+              example: 'https://api.partner.io/deliveryReports/unique-id'
     GetClientConfigurationResponse:
       type: object
       properties:
@@ -266,80 +229,27 @@ components:
           $ref: '#/components/schemas/CustomFieldValues'
       required:
         - customFieldValues
-    Messages:
+    ClientConfigurationError:
       type: object
       properties:
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/Message'
-          minimum: 1
-          maximum: 1000
-      required:
-        - messages
-    Message:
-      type: object
-      properties:
-        source:
+        fieldName:
           type: string
-          pattern: '^[A-Za-z0-9]+$'
-          example: '436771234567'
-        destination:
-          type: string
-          pattern: '^\d+$'
-          example: '381641234567'
-        message:
-          type: string
-          example: 'Hello world!'
-        emarsysMessageId:
-          type: string
-          example: 'WI0ksjocu3b8W8kQU26M'
-        isTransactional:
-          type: boolean
-          example: true
-      required:
-        - source
-        - destination
-        - message
-        - emarsysMessageId
-        - isTransactional
-    TestConnectionRequest:
-      type: object
-      properties:
-        customFieldValues:
-          $ref: '#/components/schemas/CustomFieldValues'
-      required:
-        - customFieldValues
-    TestConnectionResponseOK:
-      type: object
-      properties:
-        state:
-          type: string
-          enum: [success]
-          example: 'success'
-      required:
-        - state
-    TestConnectionResponseKO:
-      type: object
-      properties:
-        state:
-          type: string
-          enum: [error]
-          example: 'error'
+          example: 'servicePlanId'
+          description: 'Key to uniquely identify the field.'
         description:
           type: string
-          example: 'There was an error'
+          example: 'servicePlanId can only contain numbers.'
+          description: 'Description of the error.'
         errorType:
           type: string
-          enum: [temporary, credential, integration]
-          example: temporary
-      discriminator:
-        propertyName: state
+          enum: [missing, invalid]
+          example: invalid
+          description: 'Type of the error.'
       required:
-        - state
+        - fieldName
         - description
-        - isTemporary
-    TestConnectionErrors:
+        - errorType
+    ClientConfigurationErrors:
       type: object
       properties:
         errors:
@@ -347,68 +257,142 @@ components:
           items:
             $ref: '#/components/schemas/ClientConfigurationError'
             minimum: 1
-    SMSTestConnectionError:
+    # Test Connection
+    TestConnectionRequest:
+      type: object
+      properties:
+        customFieldValues:
+          $ref: '#/components/schemas/CustomFieldValues'
+      required:
+        - customFieldValues
+    TestConnectionSuccessResponse:
+      type: object
+      properties:
+        state:
+          type: string
+          enum: [success]
+          example: 'success'
+          description: 'Connection test was successful when state is "success".'
+      required:
+        - state
+    TestConnectionFailureResponse:
+      type: object
+      properties:
+        state:
+          type: string
+          enum: [error]
+          example: 'error'
+          description: 'Connection test was unsuccessful when state is "error".'
+        description:
+          type: string
+          example: 'There was an error'
+          description: 'Description of the error.'
+        errorType:
+          type: string
+          enum: [temporary, credential, integration]
+          example: temporary
+          description: |
+            | Value | Description |
+            |---|---|
+            | temporary | There was a temporary issue whilst performing the request so try again later |
+            | credential | There was a problem authorizing the client on the vendor platform |
+            | integration | There is an issue related to the integration between Emarsys and the Partner service |
+      discriminator:
+        propertyName: state
+      required:
+        - state
+        - description
+        - errorType
+    TestConnectionErrors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/TestConnectionError'
+            minimum: 1
+    TestConnectionError:
       type: object
       properties:
         fieldName:
           type: string
           example: 'servicePlanId'
+          description: 'Key to uniquely identify the field.'
         description:
           type: string
           example: 'servicePlanId can only contain numbers.'
+          description: 'Description of the error.'
       required:
         - fieldName
         - description
-    SMSSendingPartnerError:
+    # Outbound Messages
+    OutboundMessage:
+      allOf:
+        - $ref: './common.yaml#/components/schemas/Message'
+        - $ref: './common.yaml#/components/schemas/EmarsysMessageId'
+        - type: object
+          properties:
+            isTransactional:
+              type: boolean
+              example: true
+              description: 'A transactional SMS is typically an automated SMS message sent in response to an event or action triggered by a contact.'
+              required:
+                - isTransactional
+    OutboundMessageBatch:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutboundMessage'
+          minimum: 1
+          maximum: 1000
+      required:
+        - messages
+    OutboundMessageError:
+      type: object
+      properties:
+        errorType:
+          type: string
+          enum: [emarsys, client, partner, provider, unknown]
+          example: partner
+          description: |
+            | Value | Description |
+            |---|---|
+            | emarsys | There was a a problem with the message send payload |
+            | client | There was a problem with the client setup |
+            | partner | There was a problem at the partner |
+            | provider | There was a problem at the provider |
+            | unknown | There was an unknown problem |
+        errorContext:
+          type: object
+          description: whatever seems to be useful
+        isErrorTransient:
+          type: boolean
+          example: false
+      required:
+        - errorType
+        - isErrorTransient
+    OutboundMessageBatchError:
       type: object
       properties:
         globalError:
-          type: object
-          properties:
-            errorType:
-              type: string
-              enum: [emarsys, client, partner, provider, unknown]
-              example: integration
-            errorContext:
-              type: object
-              description: whatever seems to be useful
-            isErrorTransient:
-              type: boolean
-              example: false
+          allOf: # Combines the BasicErrorModel and the inline model
+            - $ref: '#/components/schemas/OutboundMessageError'
+            - type: object
         messageSpecificErrors:
           type: array
           items:
-            type: object
-            properties:
-              emarsysMessageId:
-                type: string
-                example: fb9ef4ce-ecbe-4787-85ab-d10cbed18533
-              errorType:
-                type: string
-                enum: [emarsys, client, partner, provider, unknown]
-                example: client
-              errorContext:
-                type: object
-                description: whatever seems to be useful
-              isErrorTransient:
-                type: boolean
-                example: false
-  parameters:
-    clientIdPathParam:
-      name: clientId
-      in: path
-      required: true
-      description: Identifies a client using the Partner service in the UUID format. UUID should mask how Emarsys sees the clientId
-      example: 39a281c7-942f-49a9-91c2-8f0dba750f7f
-      schema:
-        type: string
+            allOf: # Combines the BasicErrorModel and the inline model
+              - $ref: '#/components/schemas/OutboundMessageError'
+              - $ref: './common.yaml#/components/schemas/EmarsysMessageId'
   securitySchemes:
     oAuthAuthorization:
       type: oauth2
       description: OAuth client credentials grant type authorization
       flows:
         clientCredentials:
-          tokenUrl: https://authorization-server/oAuthAuthorization/token/
+          tokenUrl: https://anrjzyscq.accounts400.ondemand.com/oauth2/token
           scopes: {} # TODO do we need scopes?
 security:
   - oAuthAuthorization: []

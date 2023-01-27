@@ -1,0 +1,93 @@
+components:
+  schemas:
+    ReceivedAt:
+      type: object
+      properties:
+        receivedAt:
+          type: string
+          format: date-time
+          example: '2017-07-21T17:32:28Z'
+      required:
+        - receivedAt
+    EmarsysMessageId:
+      type: object
+      properties:
+        emarsysMessageId:
+          type: string
+          example: 'WI0ksjocu3b8W8kQU26M'
+          description: 'Unique message send identifier, used to map outbound message to the delivery report.'
+      required:
+        - emarsysMessageId
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Description of the error'
+      required:
+        - message
+    InvalidFormatError:
+      type: object
+      properties:
+        keyword:
+          type: string
+          example: 'Required'
+        dataPath:
+          type: string
+          example: '.someArray[0]'
+        params:
+          type: object
+          example: { 'missingProperty': 'messageId' }
+        message:
+          type: string
+          example: "should have required property 'messageId'"
+    InvalidFormatErrorBatch:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvalidFormatError'
+            minimum: 1
+            maximum: 1000
+    Message:
+      type: object
+      properties:
+        source:
+          type: string
+          pattern: '^[A-Za-z0-9]+$'
+          example: '436771234567'
+          description: 'Source (Sender ID) of the message'
+        destination:
+          type: string
+          pattern: '^\d+$'
+          example: '381641234567'
+          description: 'MSISDN of the receiver of the message'
+        message:
+          type: string
+          example: 'Hello world!'
+          description: 'Message content (body)'
+      required:
+        - source
+        - destination
+        - message
+    IdentifiableMessage:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - type: object
+          properties:
+            messageId:
+              type: string
+              example: 'WI0ksjocu3b8W8kQU26M'
+              description: 'Unique message identifier'
+          required:
+            - messageId
+  parameters:
+    clientIdPathParam:
+      name: clientId
+      in: path
+      required: true
+      description: Identifies a client using the Partner service in the UUID format. UUID should mask how Emarsys sees the clientId
+      example: 39a281c7-942f-49a9-91c2-8f0dba750f7f
+      schema:
+        type: string
