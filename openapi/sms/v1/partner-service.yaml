@@ -35,21 +35,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateOrUpdateClientConfigurationResponse'
         '400':
-          description: Request body was not as expected
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: './common.yaml#/components/schemas/InvalidFormatErrorBatch'
-                  - $ref: '#/components/schemas/ClientConfigurationErrors'
+          $ref: './common.yaml#/components/responses/InvalidFormatResponse'
         '403':
-          description: Authentication failed.
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '5XX':
-          description: Server error occurred
-          content:
-            application/json:
-              schema:
-                $ref: './common.yaml#/components/schemas/Error'
+          $ref: './common.yaml#/components/responses/ServerErrorResponse'
     get:
       tags: [Client Configuration]
       operationId: getClientConfiguration
@@ -124,19 +114,11 @@ paths:
                   summary: Test connection failed
                   value: { state: 'error', description: 'There was an error', errorType: 'temporary' }
         '400':
-          description: Request body is wrong
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TestConnectionErrors'
+          $ref: './common.yaml#/components/responses/InvalidFormatResponse'
         '403':
-          description: Authentication failed.
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '5XX':
-          description: Server error occurred. Messages will be retried later
-          content:
-            application/json:
-              schema:
-                $ref: './common.yaml#/components/schemas/Error'
+          $ref: './common.yaml#/components/responses/ServerErrorResponse'
   /clients/{clientId}/messages:
     parameters:
       - $ref: './common.yaml#/components/parameters/clientIdPathParam'
@@ -153,29 +135,20 @@ paths:
               $ref: '#/components/schemas/OutboundMessageBatch'
       responses:
         '202':
-          description: Receiving empty response in the case all messages were accepted.
+          $ref: './common.yaml#/components/responses/AcceptedResponse'
         '400':
-          description: Returns error type and error context globally, for all messages, or per message
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OutboundMessageBatchError'
+          $ref: './common.yaml#/components/responses/InvalidFormatResponse'
         '403':
-          description: Authentication failed.
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '404':
-          description: Client does not have a configuration recorded within the Partner service. All messages will be marked as failed.
+          $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse'
         '429':
-          description: Too many requests. Messages will be retried later.
+          $ref: './common.yaml#/components/responses/TooManyRequestsResponse'
         '5XX':
-          description: Server error occurred. Messages will be retried later
-          content:
-            application/json:
-              schema:
-                $ref: './common.yaml#/components/schemas/Error'
+          $ref: './common.yaml#/components/responses/ServerErrorResponse'
 
 components:
   schemas:
-    # Client Onboarding
     CustomFieldValues:
       type: object
       description: Object containing the values the client entered during onboarding mapped by their custom field name as key.
@@ -259,7 +232,6 @@ components:
           items:
             $ref: '#/components/schemas/ClientConfigurationError'
             minimum: 1
-    # Test Connection
     TestConnectionRequest:
       type: object
       properties:
@@ -327,7 +299,6 @@ components:
       required:
         - fieldName
         - description
-    # Outbound Messages
     OutboundMessage:
       allOf:
         - $ref: './common.yaml#/components/schemas/Message'
