@@ -37,7 +37,7 @@ paths:
         '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
-          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
         '404':
           $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse'
         '429':
@@ -68,7 +68,7 @@ paths:
         '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
-          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
         '404':
           $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse'
         '429':
