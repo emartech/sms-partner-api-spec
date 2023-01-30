@@ -4,17 +4,18 @@ info:
   title: Provider callbacks
   description: |
     An SAP Emarsys SMS Partner Service allows partners to host SMS message sends that are triggered
-    by an SAP Emarsys SMS campaign launch.
+    by an SAP Emarsys SMS campaign launch. This OpenAPI specification describes the possible callback endpoints.
   contact:
     name: SAP Emarsys SMS Team
     email: team-sms@emarsys.com
-x-sap-shortText: Process delivery reports and inbound messages.
+x-sap-shortText: Process Partner service callbacks for the Emarsys SMS Partner API. Expected callbacks contain outbound message delivery reports and inbound messages.
 servers:
   - url: https://api.emarsys.net/sms/partner/v1
 paths:
   /clients/{clientId}/deliveryReports:
     post:
       summary: Send multiple delivery reports
+      description:
       operationId: sendDeliveryReports
       tags: [delivery-reports]
       security:
@@ -30,27 +31,19 @@ paths:
               $ref: '#/components/schemas/DeliveryReportBatch'
       responses:
         '202':
-          description: Null response
+          $ref: './common.yaml#/components/responses/AcceptedResponse'
         '400':
-          description: Delivery report body schema is invalid
-          content:
-            application/json:
-              schema:
-                $ref: './common.yaml#/components/schemas/InvalidFormatErrorBatch'
+          $ref: './common.yaml#/components/responses/InvalidFormatResponse'
         '401':
-          description: Authentication failed - Invalid or missing OAuth token
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
-          description: Authorization failed - OAuth client ID does not belong to a registered partner
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '404':
-          description: Client does not exists
+          $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse'
         '429':
-          description: Too many requests
+          $ref: './common.yaml#/components/responses/TooManyRequestsResponse'
         '5XX':
-          description: Server error occurred
-          content:
-            application/json:
-              schema:
-                $ref: './common.yaml#/components/schemas/Error'
+          $ref: './common.yaml#/components/responses/ServerErrorResponse'
   /clients/{clientId}/inboundMessages:
     post:
       summary: Record received inbound messages
@@ -69,27 +62,19 @@ paths:
               $ref: '#/components/schemas/InboundMessageBatch'
       responses:
         '202':
-          description: Null response
+          $ref: './common.yaml#/components/responses/AcceptedResponse'
         '400':
-          description: Inbound message body schema is invalid. If one inbound message is wrong, all messages will be refused (the whole array from the request must be valid) and all valid messages should be resent in another request
-          content:
-            application/json:
-              schema:
-                $ref: './common.yaml#/components/schemas/InvalidFormatErrorBatch'
+          $ref: './common.yaml#/components/responses/InvalidFormatResponse'
         '401':
-          description: Authentication failed - Invalid or missing OAuth token
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
-          description: Authorization failed - OAuth client ID does not belong to a registered partner
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '404':
-          description: Client does not exists
+          $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse'
         '429':
-          description: Too many requests
+          $ref: './common.yaml#/components/responses/TooManyRequestsResponse'
         '5XX':
-          description: Server error occurred
-          content:
-            application/json:
-              schema:
-                $ref: './common.yaml#/components/schemas/Error'
+          $ref: './common.yaml#/components/responses/ServerErrorResponse'
 components:
   schemas:
     # -- Delivery Reports

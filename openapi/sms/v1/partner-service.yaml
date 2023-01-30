@@ -3,7 +3,7 @@ info:
   title: SAP Emarsys SMS Partner Service
   description: |
     An SAP Emarsys SMS Partner Service allows partners to host SMS message sends that are triggered
-    by an SAP Emarsys SMS campaign launch.
+    by an SAP Emarsys SMS campaign launch. This OpenAPI specification describes the required Partner service endpoints.
   version: 0.0.1
   contact:
     name: SAP Emarsys SMS Team
@@ -17,7 +17,7 @@ paths:
     parameters:
       - $ref: './common.yaml#/components/parameters/clientIdPathParam'
     put:
-      tags: [client-configuration]
+      tags: [Client Configuration]
       operationId: createOrUpdateClientConfiguration
       summary: Create or update a single client's configuration
       requestBody:
@@ -39,7 +39,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClientConfigurationErrors'
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/InvalidFormatErrorBatch'
+                  - $ref: '#/components/schemas/ClientConfigurationErrors'
         '403':
           description: Authentication failed.
         '5XX':
@@ -49,7 +51,7 @@ paths:
               schema:
                 $ref: './common.yaml#/components/schemas/Error'
     get:
-      tags: [client-configuration]
+      tags: [Client Configuration]
       operationId: getClientConfiguration
       summary: Get a client's configuration by their ID
       responses:
@@ -71,7 +73,7 @@ paths:
               schema:
                 $ref: './common.yaml#/components/schemas/Error'
     delete:
-      tags: [client-configuration]
+      tags: [Client Configuration]
       operationId: deleteClientConfiguration
       summary: Delete a client's configuration by their ID
       responses:
@@ -90,7 +92,7 @@ paths:
                 $ref: './common.yaml#/components/schemas/Error'
   /testConnection:
     post:
-      tags: [connection-test]
+      tags: [Client Configuration Test]
       operationId: testConnection
       summary: Test connection with the provided custom fields with the provider
       requestBody:
@@ -139,7 +141,7 @@ paths:
     parameters:
       - $ref: './common.yaml#/components/parameters/clientIdPathParam'
     post:
-      tags: [message-sending]
+      tags: [Outbound Message Sending]
       operationId: sendMessages
       summary: Send SMS messages to the Partner API
       requestBody:

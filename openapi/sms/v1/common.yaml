@@ -15,7 +15,7 @@ components:
         emarsysMessageId:
           type: string
           example: 'WI0ksjocu3b8W8kQU26M'
-          description: 'Unique message send identifier, used to map outbound message to the delivery report.'
+          description: 'Unique identifier for an individual message send. This is used to map outbound message to the delivery report.'
       required:
         - emarsysMessageId
     Error:
@@ -23,24 +23,27 @@ components:
       properties:
         message:
           type: string
-          example: 'Description of the error'
+          example: 'Unable to connect to the Partner service.'
+          description: 'Description of the error'
       required:
         - message
     InvalidFormatError:
-      type: object
-      properties:
-        keyword:
-          type: string
-          example: 'Required'
-        dataPath:
-          type: string
-          example: '.someArray[0]'
-        params:
-          type: object
-          example: { 'missingProperty': 'messageId' }
-        message:
-          type: string
-          example: "should have required property 'messageId'"
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            keyword:
+              type: string
+              example: 'Required'
+            dataPath:
+              type: string
+              example: '.someArray[0]'
+            params:
+              type: object
+              example: { 'missingProperty': 'messageId' }
+            message:
+              type: string
+              example: "should have required property 'messageId'"
     InvalidFormatErrorBatch:
       type: object
       properties:
@@ -87,7 +90,31 @@ components:
       name: clientId
       in: path
       required: true
-      description: Identifies a client using the Partner service in the UUID format. UUID should mask how Emarsys sees the clientId
+      description: Ths is the ID used to reference the client user's integration with the Partner service. It is generated when the client user completes the onboarding.
       example: 39a281c7-942f-49a9-91c2-8f0dba750f7f
       schema:
         type: string
+        format: uuid
+  responses:
+    AcceptedResponse:
+      description: Request was accepted
+    InvalidFormatResponse:
+      description: Request body is invalid and does not follow API specification
+      content:
+        application/json:
+          schema:
+            $ref: './common.yaml#/components/schemas/InvalidFormatErrorBatch'
+    AuthenticationFailedResponse:
+      description: Authentication failed - Invalid or missing OAuth token
+    AuthorizationFailedResponse:
+      description: Authorization failed - OAuth client ID does not belong to a registered partner
+    ClientDoesNotExistResponse:
+      description: Client does not exists
+    TooManyRequestsResponse:
+      description: Too many requests
+    ServerErrorResponse:
+      description: Server error occurred
+      content:
+        application/json:
+          schema:
+            $ref: './common.yaml#/components/schemas/Error'

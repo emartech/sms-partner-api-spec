@@ -1,10 +1,10 @@
 # Instructions
 
-SAP Emarsys empowers marketers around the world to create truly personalized omnichannel experiences that deliver business outcomes. The Emarsys SMS Partner API allows partners to integrate into the Emarsys SMS channel. The partner API is REST based.
+SAP Emarsys empowers marketers around the world to create a truly personalized omnichannel experiences that delivers business outcomes. The Emarsys SMS Partner API allows partners to integrate onto the Emarsys SMS channel. The Partner API is [RESTful](https://todo-link.com).
 
 ## API Specification
 
-The API specification has been created using OpenAPI 3.0.3. It is available to be exported using the links below:
+The API specification has been created using OpenAPI 3.0.3. It is available to be viewed and exported using the links below:
 
 - [Partner Service Specification](../partner-service.yaml)
 - [Partner Callbacks Specification](../partner-callbacks.yaml)
@@ -18,9 +18,14 @@ The current functionality supported is:
 
 ## Glossary
 
+| Term | Definition |
+| ---- | --------- |
+| Client | This is the client user utilising the Partner service for the SMS channel. |
+| Client ID | Ths is the ID used to reference the client user's integration with the Partner service. It is generated when the client user completes the onboarding |
 ---
-
 ## Setup
+
+This section describes the steps required to use the SAP Emarsys SMS Partner API.
 
 ### Partner Onboarding
 
