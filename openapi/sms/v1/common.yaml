@@ -107,7 +107,7 @@ components:
     AuthenticationFailedResponse:
       description: Authentication failed - Invalid or missing OAuth token
     AuthorizationFailedResponse:
-      description: Authorization failed - OAuth client ID does not belong to a registered partner
+      description: Authorization failed - The OAuth client ID does not have access to this resource
     ClientDoesNotExistResponse:
       description: Client does not exists
     TooManyRequestsResponse:
