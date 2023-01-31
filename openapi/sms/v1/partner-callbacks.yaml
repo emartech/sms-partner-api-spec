@@ -89,7 +89,7 @@ components:
               enum: ['ACCEPTED', 'DELIVERED', 'SOFTBOUNCE', 'HARDBOUNCE', 'UNKNOWN', 'ERROR']
               example: 'DELIVERED'
             details:
-              description: 'This property can be used to provide extra details about the report'
+              description: 'This property can be used to provide extra details about the status of the delivery'
               type: object
               example: { providerStatus: 'HARDBOUNCE', providerCode: 5001 }
             providerMessageIds:
@@ -97,7 +97,9 @@ components:
               items:
                 type: string
                 example: 'yqqKUsSSvr'
+                description: 'Original provider (vendor) message ID, used for troubleshooting directly with the vendor'
               minItems: 1
+              description: 'Original message IDs from the provider (vendor) can be used to aid troubleshooting with the provider'
             messageParts:
               type: integer
               example: 3
@@ -126,6 +128,7 @@ components:
               type: string
               enum: ['AUTHENTICATION', 'INVALID_SENDER_ID', 'INSUFFICIENT_CREDIT', 'UNKNOWN']
               example: 'AUTHENTICATION'
+              description: 'Type of the error. Used to determine how the user is notified.'
           required:
             - status
             - errorType
