@@ -141,7 +141,11 @@ paths:
         '202':
           $ref: './common.yaml#/components/responses/AcceptedResponse'
         '400':
-          $ref: './common.yaml#/components/responses/InvalidFormatResponse'
+          description: Returns error type and error context globally, for all messages, or per message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutboundMessageBatchError'
         '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
