@@ -86,7 +86,7 @@ components:
           properties:
             status:
               type: string
-              enum: ['ACCEPTED', 'DELIVERED', 'SOFTBOUNCE', 'HARDBOUNCE', 'UNKNOWN']
+              enum: ['ACCEPTED', 'DELIVERED', 'SOFTBOUNCE', 'HARDBOUNCE', 'UNKNOWN', 'ERROR']
               example: 'DELIVERED'
             details:
               description: 'This property can be used to provide extra details about the report'
@@ -102,31 +102,26 @@ components:
               type: integer
               example: 3
               minimum: 0
+    DeliveryReportSuccess:
+      allOf:
+        - $ref: '#/components/schemas/DeliveryReport'
+        - type: object
+          properties:
+            status:
+              type: string
+              enum: [ 'ACCEPTED', 'DELIVERED', 'SOFTBOUNCE', 'HARDBOUNCE', 'UNKNOWN' ]
+              example: 'DELIVERED'
           required:
             - status
     DeliveryReportError:
       allOf:
-        - $ref: './common.yaml#/components/schemas/ReceivedAt'
-        - $ref: './common.yaml#/components/schemas/EmarsysMessageId'
+        - $ref: '#/components/schemas/DeliveryReport'
         - type: object
           properties:
             status:
               type: string
               enum: ['ERROR']
-            details:
-              description: 'This property can be used to provide extra details about the report'
-              type: object
-              example: { providerStatus: 'HARDBOUNCE', providerCode: 5001 }
-            providerMessageIds:
-              type: array
-              items:
-                type: string
-                example: 'yqqKUsSSvr'
-              minItems: 1
-            messageParts:
-              type: integer
-              example: 3
-              minimum: 0
+              example: 'ERROR'
             errorType:
               type: string
               enum: ['AUTHENTICATION', 'INVALID_SENDER_ID', 'INSUFFICIENT_CREDIT', 'UNKNOWN']
@@ -141,7 +136,7 @@ components:
           type: array
           items:
             oneOf:
-              - $ref: '#/components/schemas/DeliveryReport'
+              - $ref: '#/components/schemas/DeliveryReportSuccess'
               - $ref: '#/components/schemas/DeliveryReportError'
           minItems: 1
           maxItems: 1000
