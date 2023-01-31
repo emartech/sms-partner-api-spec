@@ -51,8 +51,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InvalidFormatError'
-            minimum: 1
-            maximum: 1000
+          minItems: 1
     Message:
       type: object
       properties:

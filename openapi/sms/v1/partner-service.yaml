@@ -237,7 +237,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ClientConfigurationError'
-            minimum: 1
+          minItems: 1
     TestConnectionRequest:
       type: object
       properties:
@@ -290,7 +290,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TestConnectionError'
-            minimum: 1
+          minItems: 1
     TestConnectionError:
       type: object
       properties:
@@ -324,8 +324,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OutboundMessage'
-          minimum: 1
-          maximum: 1000
+          minItems: 1
+          maxItems: 1000
       required:
         - messages
     OutboundMessageError:
