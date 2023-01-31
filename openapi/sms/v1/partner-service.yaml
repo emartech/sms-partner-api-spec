@@ -36,8 +36,10 @@ paths:
                 $ref: '#/components/schemas/CreateOrUpdateClientConfigurationResponse'
         '400':
           $ref: './common.yaml#/components/responses/InvalidFormatResponse'
-        '403':
+        '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
+        '403':
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
         '5XX':
           $ref: './common.yaml#/components/responses/ServerErrorResponse'
     get:
@@ -115,8 +117,10 @@ paths:
                   value: { state: 'error', description: 'There was an error', errorType: 'temporary' }
         '400':
           $ref: './common.yaml#/components/responses/InvalidFormatResponse'
-        '403':
+        '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
+        '403':
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
         '5XX':
           $ref: './common.yaml#/components/responses/ServerErrorResponse'
   /clients/{clientId}/messages:
@@ -138,8 +142,10 @@ paths:
           $ref: './common.yaml#/components/responses/AcceptedResponse'
         '400':
           $ref: './common.yaml#/components/responses/InvalidFormatResponse'
-        '403':
+        '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
+        '403':
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
         '404':
           $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse'
         '429':
