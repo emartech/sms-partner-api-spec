@@ -1,5 +1,7 @@
 # Emarsys SMS Partner API OpenAPI Specification
 
+Swagger UI is available on [GitHub Pages](https://emartech.github.io/sms-partner-api-spec/)
+
 Default templates for Emartech open source repositories, including LICENSE, .reuse/dep5, Code of Conduct, etc... All repositories on github.com/Emartech will be created based on this template.
 
 ## To-Do
@@ -14,7 +16,7 @@ In case you are the maintainer of a new Emartech open source project, these are 
 
 ***
 
-# Our new open source project
+# Our nw open source project
 
 ## About this project
 
