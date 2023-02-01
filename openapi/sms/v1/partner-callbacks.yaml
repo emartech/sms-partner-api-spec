@@ -15,7 +15,6 @@ paths:
   /clients/{clientId}/deliveryReports:
     post:
       summary: Send multiple delivery reports
-      description:
       operationId: sendDeliveryReports
       tags: [delivery-reports]
       security:
