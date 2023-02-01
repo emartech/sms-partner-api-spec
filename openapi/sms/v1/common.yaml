@@ -102,7 +102,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: './common.yaml#/components/schemas/InvalidFormatErrorBatch'
+            $ref: '#/components/schemas/InvalidFormatErrorBatch'
     AuthenticationFailedResponse:
       description: Authentication failed - Invalid or missing OAuth token
     AuthorizationFailedResponse:
@@ -116,4 +116,4 @@ components:
       content:
         application/json:
           schema:
-            $ref: './common.yaml#/components/schemas/Error'
+            $ref: '#/components/schemas/Error'
