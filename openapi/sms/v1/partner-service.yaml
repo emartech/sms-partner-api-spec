@@ -356,19 +356,26 @@ components:
       required:
         - errorType
         - isErrorTransient
-    OutboundMessageBatchError:
+    OutboundMessageBatchGlobalError:
       type: object
       properties:
         globalError:
           allOf: # Combines the BasicErrorModel and the inline model
             - $ref: '#/components/schemas/OutboundMessageError'
             - type: object
+    OutboundMessageBatchMessageSpecificError:
+      type: object
+      properties:
         messageSpecificErrors:
           type: array
           items:
             allOf: # Combines the BasicErrorModel and the inline model
               - $ref: '#/components/schemas/OutboundMessageError'
               - $ref: './common.yaml#/components/schemas/EmarsysMessageId'
+    OutboundMessageBatchError:
+      oneOf:
+        - $ref: '#/components/schemas/OutboundMessageBatchGlobalError'
+        - $ref: '#/components/schemas/OutboundMessageBatchMessageSpecificError'
   securitySchemes:
     oAuthAuthorization:
       type: oauth2
