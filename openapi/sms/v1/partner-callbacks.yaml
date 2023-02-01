@@ -4,53 +4,46 @@ info:
   title: Provider callbacks
   description: |
     An SAP Emarsys SMS Partner Service allows partners to host SMS message sends that are triggered
-    by an SAP Emarsys SMS campaign launch.
+    by an SAP Emarsys SMS campaign launch. This OpenAPI specification describes the possible callback endpoints.
   contact:
     name: SAP Emarsys SMS Team
     email: team-sms@emarsys.com
-x-sap-shortText: Process delivery reports and inbound messages.
+x-sap-shortText: Process Partner service callbacks for the Emarsys SMS Partner API. Expected callbacks contain outbound message delivery reports and inbound messages.
 servers:
   - url: https://api.emarsys.net/sms/partner/v1
 paths:
   /clients/{clientId}/deliveryReports:
     post:
       summary: Send multiple delivery reports
+      description:
       operationId: sendDeliveryReports
       tags: [delivery-reports]
       security:
         - oAuthAuthorization: []
       parameters:
-        - $ref: '#/components/parameters/clientIdPathParam'
+        - $ref: './common.yaml#/components/parameters/clientIdPathParam'
       requestBody:
         description: The body of the delivery reports in JSON format
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DeliveryReports'
+              $ref: '#/components/schemas/DeliveryReportBatch'
       responses:
         '202':
-          description: Null response
+          $ref: './common.yaml#/components/responses/AcceptedResponse'
         '400':
-          description: Delivery report body schema is invalid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InvalidDeliveryReportRequestErrors'
+          $ref: './common.yaml#/components/responses/InvalidFormatResponse'
         '401':
-          description: Authentication failed - Invalid or missing OAuth token
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
-          description: Authorization failed - OAuth client ID does not belong to a registered partner
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
         '404':
-          description: Client does not exists
+          $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse'
         '429':
-          description: Too many requests
+          $ref: './common.yaml#/components/responses/TooManyRequestsResponse'
         '5XX':
-          description: Server error occurred
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: './common.yaml#/components/responses/ServerErrorResponse'
   /clients/{clientId}/inboundMessages:
     post:
       summary: Record received inbound messages
@@ -59,225 +52,123 @@ paths:
       security:
         - oAuthAuthorization: []
       parameters:
-        - $ref: '#/components/parameters/clientIdPathParam'
+        - $ref: './common.yaml#/components/parameters/clientIdPathParam'
       requestBody:
-        description: The body of the inbound messages in JSON 145078format
+        description: The body of the inbound messages in JSON 145078 format
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InboundMessages'
+              $ref: '#/components/schemas/InboundMessageBatch'
       responses:
         '202':
-          description: Null response
+          $ref: './common.yaml#/components/responses/AcceptedResponse'
         '400':
-          description: Inbound message body schema is invalid. If one inbound message is wrong, all messages will be refused (the whole array from the request must be valid) and all valid messages should be resent in another request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InvalidInboundMessagesRequestErrors'
+          $ref: './common.yaml#/components/responses/InvalidFormatResponse'
         '401':
-          description: Authentication failed - Invalid or missing OAuth token
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
-          description: Authorization failed - OAuth client ID does not belong to a registered partner
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
         '404':
-          description: Client does not exists
+          $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse'
         '429':
-          description: Too many requests
+          $ref: './common.yaml#/components/responses/TooManyRequestsResponse'
         '5XX':
-          description: Server error occurred
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: './common.yaml#/components/responses/ServerErrorResponse'
 components:
   schemas:
-    DeliveryReports:
+    # -- Delivery Reports
+    DeliveryReport:
+      allOf:
+        - $ref: './common.yaml#/components/schemas/ReceivedAt'
+        - $ref: './common.yaml#/components/schemas/EmarsysMessageId'
+        - type: object
+          properties:
+            status:
+              type: string
+              enum: ['ACCEPTED', 'DELIVERED', 'SOFTBOUNCE', 'HARDBOUNCE', 'UNKNOWN', 'ERROR']
+              example: 'DELIVERED'
+            details:
+              description: 'This property can be used to provide extra details about the status of the delivery'
+              type: object
+              example: { providerStatus: 'HARDBOUNCE', providerCode: 5001 }
+            providerMessageIds:
+              type: array
+              items:
+                type: string
+                example: 'yqqKUsSSvr'
+                description: 'Original provider (vendor) message ID, used for troubleshooting directly with the vendor'
+              minItems: 1
+              description: 'Original message IDs from the provider (vendor) can be used to aid troubleshooting with the provider'
+            messageParts:
+              type: integer
+              example: 3
+              minimum: 0
+    DeliveryReportSuccess:
+      allOf:
+        - $ref: '#/components/schemas/DeliveryReport'
+        - type: object
+          properties:
+            status:
+              type: string
+              enum: [ 'ACCEPTED', 'DELIVERED', 'SOFTBOUNCE', 'HARDBOUNCE', 'UNKNOWN' ]
+              example: 'DELIVERED'
+          required:
+            - status
+    DeliveryReportError:
+      allOf:
+        - $ref: '#/components/schemas/DeliveryReport'
+        - type: object
+          properties:
+            status:
+              type: string
+              enum: ['ERROR']
+              example: 'ERROR'
+            errorType:
+              type: string
+              enum: ['AUTHENTICATION', 'INVALID_SENDER_ID', 'INSUFFICIENT_CREDIT', 'UNKNOWN']
+              example: 'AUTHENTICATION'
+              description: 'Type of the error. Used to determine how the user is notified.'
+          required:
+            - status
+            - errorType
+    DeliveryReportBatch:
       type: object
       properties:
         deliveryReports:
           type: array
           items:
             oneOf:
-              - $ref: '#/components/schemas/DeliveryReport'
+              - $ref: '#/components/schemas/DeliveryReportSuccess'
               - $ref: '#/components/schemas/DeliveryReportError'
-            minimum: 1
-            maximum: 1000
+          minItems: 1
+          maxItems: 1000
       required:
         - deliveryReports
-    DeliveryReport:
-      type: object
-      properties:
-        status:
-          type: string
-          enum: ['ACCEPTED', 'DELIVERED', 'SOFTBOUNCE', 'HARDBOUNCE', 'UNKNOWN']
-          example: 'DELIVERED'
-        emarsysMessageId:
-          type: string
-          example: 'MfWrPoFGyn'
-        receivedAt:
-          type: string
-          format: date-time
-          example: '2017-07-21T17:32:28Z'
-        details:
-          description: 'This property can be used to provide extra details about the report'
-          type: object
-          example: { providerStatus: 'HARDBOUNCE', providerCode: 5001 }
-        providerMessageIds:
-          type: array
-          items:
-            type: string
-            example: 'yqqKUsSSvr'
-            minimum: 1
-        messageParts:
-          type: integer
-          example: 3
-          minimum: 0
-      required:
-        - status
-        - emarsysMessageId
-        - receivedAt
-    DeliveryReportError:
-      type: object
-      properties:
-        status:
-          type: string
-          enum: ['ERROR']
-        emarsysMessageId:
-          type: string
-          example: 'MfWrPoFGyn'
-        receivedAt:
-          type: string
-          format: date-time
-          example: '2017-07-21T17:32:28Z'
-        details:
-          description: 'This property can be used to provide extra details about the report'
-          type: object
-          example: { providerStatus: 'HARDBOUNCE', providerCode: 5001 }
-        providerMessageIds:
-          type: array
-          items:
-            type: string
-            example: 'yqqKUsSSvr'
-            minimum: 1
-        messageParts:
-          type: integer
-          example: 3
-          minimum: 0
-        errorType:
-          type: string
-          enum: ['AUTHENTICATION', 'INVALID_SENDER_ID', 'INSUFFICIENT_CREDIT', 'UNKNOWN']
-          example: 'AUTHENTICATION'
-      required:
-        - status
-        - emarsysMessageId
-        - receivedAt
-        - errorType
-    InboundMessages:
+    # -- Inbound Messages
+    InboundMessage:
+      allOf:
+        - $ref: './common.yaml#/components/schemas/IdentifiableMessage'
+        - $ref: './common.yaml#/components/schemas/ReceivedAt'
+    InboundMessageBatch:
       type: object
       properties:
         inboundMessages:
           type: array
           items:
             $ref: '#/components/schemas/InboundMessage'
-            minimum: 1
-            maximum: 1000
+          minItems: 1
+          maxItems: 1000
       required:
         - inboundMessages
-    InboundMessage:
-      type: object
-      properties:
-        messageId:
-          type: string
-          example: 'kzO6Z1FVbn'
-          description: 'Unique ID. This is used for deduplication and troubleshooting.'
-        from:
-          type: string
-          pattern: '^\+?\d+$'
-          example: '381651234567'
-        to:
-          type: string
-          pattern: '^\+?\d+$'
-          example: '4367712345678'
-        message:
-          type: string
-          example: 'STOP'
-        receivedAt:
-          type: string
-          format: date-time
-          example: '2017-07-21T17:32:28Z'
-      required:
-        - messageId
-        - from
-        - to
-        - message
-        - receivedAt
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-          example: 'Description of the error'
-      required:
-        - message
-    InvalidDeliveryReportRequestErrors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/InvalidDeliveryReportRequestError'
-            minimum: 1
-            maximum: 1000
-    InvalidDeliveryReportRequestError:
-      type: object
-      properties:
-        keyword:
-          type: string
-          example: 'Required'
-        dataPath:
-          type: string
-          example: '.deliveryReports[0]'
-        params:
-          type: object
-          example: { 'missingProperty': 'messageId' }
-        message:
-          type: string
-          example: "should have required property 'messageId'"
-    InvalidInboundMessagesRequestErrors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/InvalidInboundMessageRequestError'
-            minimum: 1
-            maximum: 1000
-    InvalidInboundMessageRequestError:
-      type: object
-      properties:
-        message:
-          type: string
-          example: 'Error description of for the specific item'
-        payload:
-          type: object
-          $ref: '#/components/schemas/InboundMessage'
-  parameters:
-    clientIdPathParam:
-      name: clientId
-      in: path
-      required: true
-      description: Identifies a client using the Partner service in the UUID format. UUID should mask how Emarsys sees the clientId
-      example: 39a281c7-942f-49a9-91c2-8f0dba750f7f
-      schema:
-        type: string
+
   securitySchemes:
     oAuthAuthorization:
       type: oauth2
       description: OAuth client credentials grant type authorization
       flows:
         clientCredentials:
-          tokenUrl: https://authorization-server/oauth2/token/
+          tokenUrl: https://anrjzyscq.accounts400.ondemand.com/oauth2/token
           scopes: {}
 security:
   - oAuthAuthorization: []
