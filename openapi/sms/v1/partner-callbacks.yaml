@@ -14,9 +14,9 @@ servers:
 paths:
   /clients/{clientId}/deliveryReports:
     post:
-      summary: Send multiple delivery reports
+      summary: Delivery reports callback
       operationId: sendDeliveryReports
-      tags: [delivery-reports]
+      tags: [Delivery Reports]
       security:
         - oAuthAuthorization: []
       parameters:
@@ -45,7 +45,7 @@ paths:
           $ref: './common.yaml#/components/responses/ServerErrorResponse'
   /clients/{clientId}/inboundMessages:
     post:
-      summary: Record received inbound messages
+      summary: Inbound messages callback
       operationId: sendInboundMessages
       tags: [inbound-messages]
       security:
