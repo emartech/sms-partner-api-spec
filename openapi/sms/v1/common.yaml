@@ -57,14 +57,12 @@ components:
       properties:
         source:
           type: string
-          pattern: '^[A-Za-z0-9]+$'
           example: '436771234567'
           description: 'Source (Sender ID) of the message'
         destination:
           type: string
-          pattern: '^\d+$'
           example: '381641234567'
-          description: 'MSISDN of the receiver of the message'
+          description: 'Destination of the message'
         message:
           type: string
           example: 'Hello world!'
