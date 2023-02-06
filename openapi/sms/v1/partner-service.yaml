@@ -17,7 +17,7 @@ paths:
     parameters:
       - $ref: './common.yaml#/components/parameters/clientIdPathParam'
     put:
-      tags: [Client Configuration]
+      tags: [ Client Configuration ]
       operationId: createOrUpdateClientConfiguration
       summary: Create or update a single client's configuration
       requestBody:
@@ -35,7 +35,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateOrUpdateClientConfigurationResponse'
         '400':
-          $ref: './common.yaml#/components/responses/InvalidFormatResponse'
+            $ref: '#/components/responses/InvalidClientConfigurationFormatResponse'
         '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
@@ -43,7 +43,7 @@ paths:
         '5XX':
           $ref: './common.yaml#/components/responses/ServerErrorResponse'
     get:
-      tags: [Client Configuration]
+      tags: [ Client Configuration ]
       operationId: getClientConfiguration
       summary: Get a client's configuration by their ID
       responses:
@@ -65,7 +65,7 @@ paths:
               schema:
                 $ref: './common.yaml#/components/schemas/Error'
     delete:
-      tags: [Client Configuration]
+      tags: [ Client Configuration ]
       operationId: deleteClientConfiguration
       summary: Delete a client's configuration by their ID
       responses:
@@ -84,7 +84,7 @@ paths:
                 $ref: './common.yaml#/components/schemas/Error'
   /testConnection:
     post:
-      tags: [Client Configuration Test]
+      tags: [ Client Configuration Test ]
       operationId: testConnection
       summary: Test connection with the provided custom fields with the provider
       requestBody:
@@ -116,7 +116,7 @@ paths:
                   summary: Test connection failed
                   value: { state: 'error', description: 'There was an error', errorType: 'temporary' }
         '400':
-          $ref: './common.yaml#/components/responses/InvalidFormatResponse'
+          $ref: '#/components/responses/InvalidClientConfigurationFormatResponse'
         '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
@@ -127,7 +127,7 @@ paths:
     parameters:
       - $ref: './common.yaml#/components/parameters/clientIdPathParam'
     post:
-      tags: [Outbound Message Sending]
+      tags: [ Outbound Message Sending ]
       operationId: sendMessages
       summary: Send SMS messages to the Partner API
       requestBody:
@@ -214,34 +214,6 @@ components:
           $ref: '#/components/schemas/CustomFieldValues'
       required:
         - customFieldValues
-    ClientConfigurationError:
-      type: object
-      properties:
-        fieldName:
-          type: string
-          example: 'servicePlanId'
-          description: 'Key to uniquely identify the field.'
-        description:
-          type: string
-          example: 'servicePlanId can only contain numbers.'
-          description: 'Description of the error.'
-        errorType:
-          type: string
-          enum: [missing, invalid]
-          example: invalid
-          description: 'Type of the error.'
-      required:
-        - fieldName
-        - description
-        - errorType
-    ClientConfigurationErrors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClientConfigurationError'
-          minItems: 1
     TestConnectionRequest:
       type: object
       properties:
@@ -254,7 +226,7 @@ components:
       properties:
         state:
           type: string
-          enum: [success]
+          enum: [ success ]
           example: 'success'
           description: 'Connection test was successful when state is "success".'
       required:
@@ -264,7 +236,7 @@ components:
       properties:
         state:
           type: string
-          enum: [error]
+          enum: [ error ]
           example: 'error'
           description: 'Connection test was unsuccessful when state is "error".'
         description:
@@ -273,7 +245,7 @@ components:
           description: 'Description of the error.'
         errorType:
           type: string
-          enum: [temporary, credential, integration]
+          enum: [ temporary, credential, integration ]
           example: temporary
           description: |
             | Value | Description |
@@ -287,15 +259,7 @@ components:
         - state
         - description
         - errorType
-    TestConnectionErrors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/TestConnectionError'
-          minItems: 1
-    TestConnectionError:
+    InvalidFieldError:
       type: object
       properties:
         fieldName:
@@ -306,9 +270,23 @@ components:
           type: string
           example: 'servicePlanId can only contain numbers.'
           description: 'Description of the error.'
+        errorType:
+          type: string
+          enum: [ missing, invalid ]
+          example: invalid
+          description: 'Type of the error.'
       required:
         - fieldName
         - description
+        - errorType
+    InvalidFieldErrors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvalidFieldError'
+          minItems: 1
     OutboundMessage:
       allOf:
         - $ref: './common.yaml#/components/schemas/Message'
@@ -337,7 +315,7 @@ components:
       properties:
         errorType:
           type: string
-          enum: [emarsys, client, partner, provider, unknown]
+          enum: [ emarsys, client, partner, provider, unknown ]
           example: partner
           description: |
             | Value | Description |
@@ -376,6 +354,14 @@ components:
       oneOf:
         - $ref: '#/components/schemas/OutboundMessageBatchGlobalError'
         - $ref: '#/components/schemas/OutboundMessageBatchMessageSpecificError'
+  responses:
+    InvalidClientConfigurationFormatResponse:
+      description: Request body is invalid and does not follow API specification.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/InvalidFieldErrors'
   securitySchemes:
     oAuthAuthorization:
       type: oauth2
@@ -383,6 +369,6 @@ components:
       flows:
         clientCredentials:
           tokenUrl: https://anrjzyscq.accounts400.ondemand.com/oauth2/token
-          scopes: {} # TODO do we need scopes?
+          scopes: { } # TODO do we need scopes?
 security:
-  - oAuthAuthorization: []
+  - oAuthAuthorization: [ ]
