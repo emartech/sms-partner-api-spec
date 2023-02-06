@@ -35,7 +35,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateOrUpdateClientConfigurationResponse'
         '400':
-            $ref: '#/components/responses/ClientConfigurationInvalidFormatResponse'
+            $ref: '#/components/responses/InvalidClientConfigurationFormatResponse'
         '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
@@ -116,7 +116,7 @@ paths:
                   summary: Test connection failed
                   value: { state: 'error', description: 'There was an error', errorType: 'temporary' }
         '400':
-          $ref: '#/components/responses/TestConnectionInvalidFormatResponse'
+          $ref: '#/components/responses/InvalidClientConfigurationFormatResponse'
         '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
@@ -355,14 +355,7 @@ components:
         - $ref: '#/components/schemas/OutboundMessageBatchGlobalError'
         - $ref: '#/components/schemas/OutboundMessageBatchMessageSpecificError'
   responses:
-    ClientConfigurationInvalidFormatResponse:
-      description: Request body is invalid and does not follow API specification.
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: '#/components/schemas/InvalidFieldErrors'
-    TestConnectionInvalidFormatResponse:
+    InvalidClientConfigurationFormatResponse:
       description: Request body is invalid and does not follow API specification.
       content:
         application/json:
