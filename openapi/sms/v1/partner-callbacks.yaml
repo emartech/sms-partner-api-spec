@@ -6,7 +6,7 @@ info:
     An SAP Emarsys SMS Partner Service allows partners to host SMS message sends that are triggered
     by an SAP Emarsys SMS campaign launch. This OpenAPI specification describes the possible callback endpoints.
   contact:
-    name: Emarsys SMS Team
+    name: SAP Emarsys SMS Team
     email: team-sms@emarsys.com
 x-sap-shortText: Process Partner service callbacks for the Emarsys SMS Partner API. Expected callbacks contain outbound message delivery reports and inbound messages.
 servers:
