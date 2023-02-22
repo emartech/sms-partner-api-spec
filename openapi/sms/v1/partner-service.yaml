@@ -184,12 +184,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/CallbackUrl'
             - description: 'The inbound message callback URL, provided by the Partner.'
-              example: 'https://api.partner.io/inboundMessages/unique-id'
         deliveryReports:
           allOf:
             - $ref: '#/components/schemas/CallbackUrl'
             - description: 'The delivery report callback URL, provided by the Partner.'
-              example: 'https://api.partner.io/deliveryReports/unique-id'
     GetClientConfigurationResponse:
       type: object
       properties:
