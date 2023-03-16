@@ -289,14 +289,6 @@ components:
       allOf:
         - $ref: './common.yaml#/components/schemas/Message'
         - $ref: './common.yaml#/components/schemas/EmarsysMessageId'
-        - type: object
-          properties:
-            isTransactional:
-              type: boolean
-              example: true
-              description: 'A transactional SMS is typically an automated SMS message sent in response to an event or action triggered by a contact.'
-              required:
-                - isTransactional
     OutboundMessageBatch:
       type: object
       properties:

@@ -99,10 +99,6 @@ components:
                 description: 'Original provider (vendor) message ID, used for troubleshooting directly with the vendor'
               minItems: 1
               description: 'Original message IDs from the provider (vendor) can be used to aid troubleshooting with the provider'
-            messageParts:
-              type: integer
-              example: 3
-              minimum: 0
     DeliveryReportSuccess:
       allOf:
         - $ref: '#/components/schemas/DeliveryReport'
