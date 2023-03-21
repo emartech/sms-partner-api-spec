@@ -15,10 +15,10 @@ The API specification has been created using OpenAPI 3.0.3. It is available to b
 
 The current functionality supported is:
 
-- [Self-service on-boarding for the client end user.](#client-onboarding).
-- [Sending SMS messages triggered by the Emarsys platform.](#outbound-messages)
-- [Recording delivery reports of sent messages.](#delivery-reports)
-- [Ingesting inbound SMS messages.](#inbound-messages)
+- [Self-service on-boarding for the client end user](#client-onboarding)
+- [Sending SMS messages triggered by the Emarsys platform](#outbound-messages)
+- [Recording delivery reports of sent messages](#delivery-reports)
+- [Receiving inbound SMS messages](#inbound-messages)
 
 ## Glossary
 
@@ -62,7 +62,7 @@ To onboard we require:
 And we subsequently provide:
 
 - Confirmation of setup completion on an environment (staging / production)
-- Emarsys SMS OAuth details (host, endpoints, client ID) to verify requests
+- Emarsys SMS OAuth Client ID (to verify requests)
 
 ### Authorization
 
@@ -102,7 +102,7 @@ sequenceDiagram
 ```
 
 1. Client user (marketer) will use the self-onboarding UI to setup their SMS channel. During this process they will select the partner and provide their values required in the custom fields.
-2. The SMS service will on-board the client, generate a unique client ID (to reference them) and forward the client configuration (the values entered in the custom fields) to the Partner service.
+2. The SMS service will on-board the client, generate a unique client ID (to reference them) and [send the client configuration (the values entered in the custom fields) to the Partner service](../partner-api/partner-service.yaml/paths/~1clients~1{clientId}~1configuration/put).
 
 
 
@@ -167,7 +167,7 @@ sequenceDiagram
 ```
 
 1. The client user triggers an SMS campaign launch. This can be either manually or using some automation.
-2. The Emarsys SMS service will generate the messages for the launch and send them to the Partner Service
+2. The Emarsys SMS service will generate the messages for the launch and [send them to the Partner Service](../partner-api/partner-service.yaml/paths/~1clients~1{clientId}~1messages/post)
 3. The Partner service will then send the messages (on behalf of the client user) via the Partner/Vendor SMS API
 
 - ##### [Create Outbound Message Batch](../partner-api/partner-service.yaml/paths/~1clients~1{clientId}~1messages/post)
