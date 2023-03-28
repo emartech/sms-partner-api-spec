@@ -163,7 +163,7 @@ components:
       description: OAuth client credentials grant type authorization
       flows:
         clientCredentials:
-          tokenUrl: https://anrjzyscq.accounts400.ondemand.com/oauth2/token
+          tokenUrl: https://smsemarsys.accounts.ondemand.com/oauth2/token
           scopes: {}
 security:
   - oAuthAuthorization: []

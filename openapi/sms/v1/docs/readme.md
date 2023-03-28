@@ -24,8 +24,9 @@ The current functionality supported is:
 
 | Term | Definition |
 | ---- | --------- |
-| Client | This is the client user utilising the Partner service for the SMS channel. |
-| Client ID | Ths is the ID used to reference the client user's integration with the Partner service. It is generated when the client user completes the onboarding |
+| Client | The client user utilising the Partner service for the SMS channel. |
+| Client ID | The ID used to reference the client user's integration with the Partner service. It is generated when the client user completes the onboarding |
+| Partner Service | The web service operated by the Partner that utilises the Emarsys SMS Partner API |
 
 ---
 ## Setup
@@ -56,7 +57,6 @@ To onboard we require:
 - Features enabled:
   - Whether your platform supports inbound messages
 - Contact details (we will contact you in case of an issue):
-  - Phone number
   - Email
 
 And we subsequently provide:
@@ -86,7 +86,9 @@ Below are the supported workflows of a partner service
 | Outbound messages | <center>✅</center> | <center>✅</center> |
 | Inbound Messages  | <center>✅</center> | <center>❌</center> |
 
-### Client Onboarding
+### Client Configuration
+
+This process occurs during client onboarding of the Emarsys SMS channel. They input their required values in the custom fields that were provided during the [Partner Onboarding](#partner-onboarding)
 
 ```mermaid
 sequenceDiagram
@@ -149,7 +151,6 @@ $ref: '../partner-service.yaml#/components/schemas/GetClientConfigurationRespons
 
 ### Outbound Messaging and Reporting
 
-
 #### Outbound Messages
 
 ```mermaid
@@ -178,7 +179,7 @@ sequenceDiagram
 
 #### Delivery Reports
 
-Delivery reports are communicated via a callback to Emarsys SMS:
+Delivery reports are communicated via a callback to the Emarsys SMS service:
 
 ```mermaid
 sequenceDiagram
