@@ -40,10 +40,10 @@ components:
               example: '.someArray[0]'
             params:
               type: object
-              example: { 'missingProperty': 'messageId' }
+              example: { 'missingProperty': 'foo' }
             message:
               type: string
-              example: "should have required property 'messageId'"
+              example: "should have required property 'foo'"
     InvalidFormatErrorBatch:
       type: object
       properties:

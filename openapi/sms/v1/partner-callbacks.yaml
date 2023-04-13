@@ -1,10 +1,9 @@
 openapi: '3.0.3'
 info:
   version: 0.0.1
-  title: Provider callbacks
+  title: SAP Emarsys Partner Callbacks
   description: |
-    An SAP Emarsys SMS Partner Service allows partners to host SMS message sends that are triggered
-    by an SAP Emarsys SMS campaign launch. This OpenAPI specification describes the possible callback endpoints.
+    The SAP Emarsys Partner Callbacks API allows Partners to provide delivery reports and inbound messages. This OpenAPI specification describes the possible callback endpoints.
   contact:
     name: SAP Emarsys SMS Team
     email: team-sms@emarsys.com
@@ -53,7 +52,7 @@ paths:
       parameters:
         - $ref: './common.yaml#/components/parameters/clientIdPathParam'
       requestBody:
-        description: The body of the inbound messages in JSON 145078 format
+        description: The body of the inbound messages in JSON format
         required: true
         content:
           application/json:
