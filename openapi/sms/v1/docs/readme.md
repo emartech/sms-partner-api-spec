@@ -66,7 +66,7 @@ And we subsequently provide:
 
 ### Authorization
 
-Requests sent by Emarsys will have an OAuth 2 token. This token should be validated by the Partner service. Emarsys will validate a Partner's requests using the provided (external) OAuth service and OAuth client ID
+Requests sent by Emarsys will have an OAuth 2 token. This token should be validated by the Partner service and should be RFC 7519 compliant. The OAuth 2 endpoint for fetching the token itself should be RFC 6749 compliant. Emarsys strongly recommends encoding `exp` property in the token (which should be in seconds since Epoch time, see RFC 7519 for details) with validity of one hour, in order to make the message sending speed even better and reduce traffic to the OAuth 2 token endpoint. Emarsys will validate a Partner's requests using the provided (external) OAuth service and OAuth client ID
 
 | URI                                                       | Description                                                      |
 | --------------------------------------------------------- | ---------------------------------------------------------------- |
