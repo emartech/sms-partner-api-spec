@@ -14,6 +14,7 @@ components:
       properties:
         emarsysMessageId:
           type: string
+          minLength: 1
           example: 'WI0ksjocu3b8W8kQU26M'
           description: 'Unique identifier for an individual message send. This is used to map outbound message to the delivery report.'
       required:
