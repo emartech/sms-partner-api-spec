@@ -54,8 +54,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetClientConfigurationResponse'
+        '401':
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
-          description: Authentication failed.
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
         '404':
           description: Client does not have a configuration recorded within the Partner service.
         '5XX':
@@ -70,10 +72,11 @@ paths:
       summary: Delete a client's configuration by their ID
       responses:
         '204':
-          description: Client exists within the Partner service and their configuration
-            is returned in the response.
+          description: Client Configuration was deleted successfully at the Partner Service.
+        '401':
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
-          description: Authentication failed.
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
         '404':
           description: Client does not have a configuration recorded within the Partner service.
         '5XX':
