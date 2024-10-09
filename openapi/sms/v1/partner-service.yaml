@@ -141,14 +141,7 @@ paths:
         '202':
           $ref: './common.yaml#/components/responses/AcceptedResponse'
         '400':
-          description: |
-            Returns error type and error context globally, for all messages, or per message. 
-            
-            Use the OutboundMessageBatchGlobalError schema if there is an issue with the payload as a whole, and use the OutboundMessageBatchMessageSpecificError response schema if any of the messages are invalid.
-            
-            No messages should be sent or processed if the payload is invalid in any way, even if there are some valid messages among the invalid ones.
-            
-            Upon recieving a OutboundMessageBatchMessageSpecificError response, the Emarsys SMS Service will treat all of the messages with errors as failed and will retry any messages that did not have errors.
+          description: Returns error type and error context globally, for all messages, or per message
           content:
             application/json:
               schema:
