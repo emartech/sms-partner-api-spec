@@ -103,15 +103,17 @@ components:
           schema:
             $ref: '#/components/schemas/InvalidFormatErrorBatch'
     AuthenticationFailedResponse:
-      description: Authentication failed - Invalid or missing OAuth token
+      description: Authentication failed - Invalid or missing OAuth token.
     AuthorizationFailedResponse:
-      description: Authorization failed - OAuth client ID does not have access to this resource
+      description: Authorization failed - OAuth client ID is not setup correctly or does not have access to this resource.
+    AuthorizationFailedResponseEmarsys: # Wrong Emarsys environment could try to access something
+      description: Authorization failed - Emarsys OAuth client ID does not have access to this resource.
     ClientDoesNotExistResponse:
-      description: Client does not exists
+      description: Client does not exist.
     TooManyRequestsResponse:
-      description: Too many requests
+      description: Too many requests. Treated as retryable.
     ServerErrorResponse:
-      description: Server error occurred
+      description: Server error occurred. Treated as retryable.
       content:
         application/json:
           schema:

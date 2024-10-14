@@ -32,13 +32,13 @@ paths:
         '202':
           $ref: './common.yaml#/components/responses/AcceptedResponse'
         '400':
-          $ref: './common.yaml#/components/responses/InvalidFormatResponse'
+          $ref: './common.yaml#/components/responses/InvalidFormatResponse' # client id is missing or not a UUID or not a version 4 UUID, or request body violates this spec
         '401':
-          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse' # oauth token missing or invalid
         '403':
-          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse' # oauth token succeeds, but no partner with oauth client id is found, or customer connection data client id belongs to a different partner
         '404':
-          $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse'
+          $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse' # no customer with this client id
         '429':
           $ref: './common.yaml#/components/responses/TooManyRequestsResponse'
         '5XX':
