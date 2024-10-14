@@ -39,7 +39,7 @@ paths:
         '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
-          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponseEmarsys'
         '5XX':
           $ref: './common.yaml#/components/responses/ServerErrorResponse'
     get:
@@ -120,7 +120,7 @@ paths:
         '401':
           $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
         '403':
-          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponseEmarsys'
         '5XX':
           $ref: './common.yaml#/components/responses/ServerErrorResponse'
   /clients/{clientId}/messages:
@@ -143,22 +143,38 @@ paths:
         '400':
           description: |
             Returns error type and error context globally, for all messages, or per message. 
+
+            This should be returned for most errors related to the sending itself. For errors with the Emarsys to partner connection, return the other status codes.
             
-            Use the OutboundMessageBatchGlobalError schema if there is an issue with the payload as a whole, and use the OutboundMessageBatchMessageSpecificError response schema if any of the messages are invalid.
+            Use the OutboundMessageBatchGlobalError schema if there is an issue with the message sending as a whole, and use the OutboundMessageBatchMessageSpecificError response schema if any of the individual messages submitted are invalid.
             
-            No messages should be sent or processed if the payload is invalid in any way, even if there are some valid messages among the invalid ones.
+            No messages should be sent or processed if the payload is invalid in any way, even if there are some valid messages among the invalid ones. By returning a 400, we can rely on no messages having been sent for this request.
             
-            Upon recieving a OutboundMessageBatchMessageSpecificError response, the Emarsys SMS Service will treat all of the messages with errors as failed and will retry any messages that did not have errors.
+            Upon recieving a OutboundMessageBatchMessageSpecificError response, the Emarsys SMS Service will treat all of the messages with errors as failed and will retry any messages that did not have errors, if applicable.
+
+            Some examples:
+
+            - If the client's credentials are not accepted by the provider, you should return a globalError with an errorType of client.
+
+            - If the message is missing a required property, you should return this with an errorType of emarsys.
+
+            - If the provider rejects the message immediately, you should return this with an errorType of provider.
+
+            - If the destination is not a valid phone number, you should return messageSpecificErrors with an errorType of client.
+
+            - If the source is provided but contains an impermissible value, you should return messageSpecificErrors with an errorType of client.
+
+            - [I need an example for when you would use the partner errorType] !!!placeholder!!!
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OutboundMessageBatchError'
+                $ref: '#/components/schemas/OutboundMessageBatchError' # The whole payload is malformed, or some messages within the payload are malformed
         '401':
-          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse'
+          $ref: './common.yaml#/components/responses/AuthenticationFailedResponse' # Emarsys submits a missing or invalid Oauth token
         '403':
-          $ref: './common.yaml#/components/responses/AuthorizationFailedResponse'
+          $ref: './common.yaml#/components/responses/AuthorizationFailedResponseEmarsys' # This Emarsys Oauth token does not have access to that resource, <s>or the client credentials are not accepted by the provider</s>
         '404':
-          $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse'
+          $ref: './common.yaml#/components/responses/ClientDoesNotExistResponse' # No credentials match the client id
         '429':
           $ref: './common.yaml#/components/responses/TooManyRequestsResponse'
         '5XX':
