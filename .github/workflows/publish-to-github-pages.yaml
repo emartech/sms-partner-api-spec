@@ -7,8 +7,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Copy OpenAPI configs to swagger-ui folder
         run: cp -r ./openapi swagger-ui/openapi
       - name: Deploy to GitHub Pages
