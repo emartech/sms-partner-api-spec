@@ -6,6 +6,18 @@ stoplight-id: cz3ydei53qosx
 
 SAP Emarsys empowers marketers around the world to create a truly personalized omnichannel experiences that delivers business outcomes. The Emarsys SMS Partner API allows partners to integrate onto the Emarsys SMS channel. The Partner API uses a RESTful approach.
 
+## Glossary
+
+| Term | Definition |
+| ---- | --------- |
+| Client | The client user utilising the SMS channel |
+| Client ID | The ID used to reference a client user's integration with the Partner service. It is generated when the client user completes the onboarding |
+| Contact | The recipient of the SMS message from the client |
+| Partner Service | The web service operated by the Partner that handles message sending by utilising the SAP Emarsys SMS Partner API |
+| Partner Callbacks | The web service operated by SAP Emarsys to handle callbacks (delivery reports and inbound messages) |
+| Outbound Message | An SMS message from a client to one of their contacts |
+| Inbound Message | An SMS message from a contact's device to the client |
+
 ## API Specification
 
 The API specification has been created using OpenAPI 3.0.3. It is available to be viewed and exported using the links below:
@@ -16,17 +28,11 @@ The API specification has been created using OpenAPI 3.0.3. It is available to b
 The current functionality supported is:
 
 - [Self-service on-boarding for the client end user](#client-onboarding)
-- [Sending SMS messages triggered by the Emarsys platform](#outbound-messages)
+- [Sending SMS messages triggered by the SAP Emarsys platform](#outbound-messages)
 - [Recording delivery reports of sent messages](#delivery-reports)
 - [Receiving inbound SMS messages](#inbound-messages)
 
-## Glossary
 
-| Term | Definition |
-| ---- | --------- |
-| Client | The client user utilising the Partner service for the SMS channel. |
-| Client ID | The ID used to reference the client user's integration with the Partner service. It is generated when the client user completes the onboarding |
-| Partner Service | The web service operated by the Partner that utilises the Emarsys SMS Partner API |
 
 ---
 ## Setup
@@ -39,7 +45,7 @@ To onboard we require:
 
 - Display name of the partner
 - Base URL for the partner service
-- Supported countries (ideally a list of ISO-3 country codes)
+- Supported countries (a comma separated list of [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) countries)
 - Partner-managed OAuth service host and OAuth Client ID
 - Custom Fields for the self-service customer on-boarding
   - ##### Field properties:
@@ -98,7 +104,7 @@ sequenceDiagram
   participant Partner as Partner Service
   Note right of Client: Onboarding
   Client->>Emarsys: Client Configuration
-  Emarsys->>Partner: Client configuration
+  Emarsys->>Partner: Client Configuration
   Note right of Partner: Partner stores the configuration used
 
 ```
@@ -148,6 +154,12 @@ $ref: '../partner-service.yaml#/components/schemas/GetClientConfigurationRespons
 - ##### [Delete Client Configuration](../partner-api/partner-service.yaml/paths/~1clients~1{clientId}~1configuration/delete)
 
 ---
+
+### Verify a Client's Configuration (Test Connection)
+
+During client onboarding, we will trigger a test connection request to verify whether the client's credentials are valid. This will determine whether the client can complete their SMS channel onboarding.
+
+- ##### [Verify a Client's Configuration (Test Connection)](../partner-api/partner-service.yaml/paths/~1testConnection)
 
 ### Outbound Messaging and Reporting
 
